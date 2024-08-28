@@ -1,8 +1,10 @@
+#ifndef CARD_H
+#define CARD_H
 
 #define DECK_SIZE 52
 
 /**
- * @brief Card Suit
+ * @brief Representation of a Suit as an enum
  */
 typedef enum Suit {
   HEARTS,
@@ -12,11 +14,10 @@ typedef enum Suit {
 } Suit;
 
 /**
- * @brief Card Rank
+ * @brief Representation of the Rank as an enum
  */
 typedef enum Rank {
-  ACE = 1,
-  TWO,
+  TWO = 2,
   THREE,
   FOUR,
   FIVE,
@@ -27,11 +28,13 @@ typedef enum Rank {
   TEN,
   JACK,
   QUEEN,
-  KING
+  KING,
+  ACE
 } Rank;
 
 /**
- * @brief Card
+ * @brief Representation of a single card object-struct
+ *
  */
 typedef struct Card {
   Suit suit;
@@ -39,13 +42,39 @@ typedef struct Card {
 } Card;
 
 /**
- * @brief
+ * @brief Fills the given card deck pointer
  *
+ * @param deck Pointer to the array of 52 cards
  */
-void fill_deck();
+void fill_deck(Card deck[DECK_SIZE]);
 
 /**
- * @brief
+ * @brief Fills the hand using a given deck
  *
+ * @param hand Pointer to the array of 5 cards representing the hand.
+ * @param deck Pointer to the array of 52 cards.
  */
 void fill_hand(Card hand[5], Card deck[DECK_SIZE]);
+
+/**
+ * @brief Evaluates if the given hand is one of the following:
+ *
+ * @brief - Pair
+ * @brief - Two pairs
+ * @brief - Three of a kind
+ * @brief - Flush
+ * @brief - Straight
+ * @brief - Four of a kind
+ *
+ * @param hand Pointer to the array of 5 cards representing the hand.
+ */
+void evaluate_hand(Card hand[5]);
+
+/**
+ * @brief Prints the hand
+ *
+ * @param hand Pointer to the array of 5 cards representing the hand.
+ */
+void print_hand(const Card hand[5]);
+
+#endif  // CARD_H

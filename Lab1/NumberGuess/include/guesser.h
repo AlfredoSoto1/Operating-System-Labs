@@ -1,15 +1,17 @@
+#ifndef GUESSER_H
+#define GUESSER_H
 
 /**
  * @brief Generates a random number from a selected domain by the programmer
  *
- * @return int - randomly generated number
+ * @return int Randomly generated number
  */
 int GenerateRandNumber();
 
 /**
  * @brief Reads the console for the user input serving as the user guess
  *
- * @return int - guess from user
+ * @return int Guess from user
  */
 int GetUserGuess();
 
@@ -19,3 +21,5 @@ int GetUserGuess();
  * @return number guessed correctly, -1 if it failed after N attempts
  */
 int VerifyGuess();
+
+#endif  // GUESSER_H

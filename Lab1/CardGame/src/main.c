@@ -7,5 +7,10 @@ int main() {
   fill_deck(deck);
   fill_hand(hand, deck);
 
-    return 0;
+  printf("Hand:\n");
+  print_hand(hand);
+
+  evaluate_hand(hand);
+
+  return 0;
 }

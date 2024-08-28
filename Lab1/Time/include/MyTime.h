@@ -1,3 +1,5 @@
+#ifndef MYTIME_H
+#define MYTIME_H
 
 /**
  * @brief Holds the values for time
@@ -22,3 +24,5 @@ void PrintTime(const Time* time);
  * @return Time
  */
 Time GetTime();
+
+#endif  // MYTIME_H
