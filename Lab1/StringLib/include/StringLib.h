@@ -1,7 +1,7 @@
 #ifndef STRINGLIB_H
 #define STRINGLIB_H
 
-#define MAX_LENGTH 25
+#define MAX_LENGTH 25 * sizeof(char)
 
 /**
  * @brief Replaces a given character and provides the address of the new string
@@ -14,7 +14,8 @@
  *
  * @note The `dst` pointer will point to a valid memory location on the heap.
  * The caller is responsible for deallocating this memory using `free()` after
- * use.
+ * use. If no character is found, it will just give a brand new copy of the
+ * string.
  */
 void Replace(char* src, char* dst, char find, char replacement);
 
@@ -29,7 +30,8 @@ void Replace(char* src, char* dst, char find, char replacement);
  *
  * @note The `dst` pointer will point to a valid memory location on the heap.
  * The caller is responsible for deallocating this memory using `free()` after
- * use.
+ * use. If no character is found, it will just give a brand new copy of the
+ * string.
  */
 void Insert(char* src, char* dst, char find, char* ins);
 
