@@ -16,7 +16,7 @@ void fill_deck(Card deck[DECK_SIZE]) {
 }
 
 void fill_hand(Card hand[5], Card deck[DECK_SIZE]) {
-  int used[DECK_SIZE] = {0};  // Array to track used cards
+  int used[DECK_SIZE] = {0};
   int card_count = 0;
 
   srand(time(NULL));
@@ -24,17 +24,20 @@ void fill_hand(Card hand[5], Card deck[DECK_SIZE]) {
   while (card_count < 5) {
     int index = rand() % DECK_SIZE;
 
-    if (!used[index]) {                // If the card hasn't been used
-      hand[card_count] = deck[index];  // Copy card to hand
-      used[index] = 1;                 // Mark card as used
+    // If the card hasn't been used
+    if (!used[index]) {
+      hand[card_count] = deck[index];
+
+      // Mark card as used
+      used[index] = 1;
       card_count++;
     }
   }
 }
 
 void evaluate_hand(Card hand[5]) {
-  int ranks[13] = {0};  // Array to count occurrences of each rank
-  int suits[4] = {0};   // Array to count occurrences of each suit
+  int ranks[13] = {0};
+  int suits[4] = {0};
 
   // Count the occurrences of each rank and suit
   for (int i = 0; i < 5; i++) {
@@ -42,7 +45,7 @@ void evaluate_hand(Card hand[5]) {
     suits[hand[i].suit]++;
   }
 
-  // Check for flush (all cards of the same suit)
+  // Validate for flush
   for (int i = 0; i < 4; i++) {
     if (suits[i] == 5) {
       printf("Flush found!\n");
@@ -50,7 +53,7 @@ void evaluate_hand(Card hand[5]) {
     }
   }
 
-  // Check for straight (consecutive ranks)
+  // Validate for straight
   for (int i = 0; i <= 8; i++) {
     if (ranks[i] && ranks[i + 1] && ranks[i + 2] && ranks[i + 3] &&
         ranks[i + 4]) {
@@ -82,13 +85,54 @@ void evaluate_hand(Card hand[5]) {
   }
 }
 
-void print_hand(const Card hand[5]) {
-  const char *suits[] = {"Hearts", "Diamonds", "Clubs", "Spades"};
-  const char *ranks[] = {"2", "3",  "4",    "5",     "6",    "7",  "8",
-                         "9", "10", "Jack", "Queen", "King", "Ace"};
+static const char* getRank(Rank rank) {
+  switch (rank) {
+    case TWO:
+      return "2";
+    case THREE:
+      return "3";
+    case FOUR:
+      return "4";
+    case FIVE:
+      return "5";
+    case SIX:
+      return "6";
+    case SEVEN:
+      return "7";
+    case EIGHT:
+      return "8";
+    case NINE:
+      return "9";
+    case TEN:
+      return "10";
+    case JACK:
+      return "Jack";
+    case QUEEN:
+      return "Queen";
+    case KING:
+      return "King";
+    case ACE:
+      return "Ace";
+  }
+}
 
+static const char* getSuits(Suit suit) {
+  switch (suit) {
+    case HEARTS:
+      return "Hearts";
+    case DIAMONDS:
+      return "Diamonds";
+    case CLUBS:
+      return "Clubs";
+    case SPADES:
+      return "Spades";
+  }
+}
+
+void print_hand(const Card hand[5]) {
+  printf("Hand:\n");
   for (int i = 0; i < 5; i++) {
-    printf("%s of %s\n", ranks[hand[i].rank - 2], suits[hand[i].suit]);
+    printf("%s of %s\n", getRank(hand[i].rank), getSuits(hand[i].suit));
   }
   printf("\n");
 }

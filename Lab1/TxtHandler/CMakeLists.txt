@@ -13,4 +13,4 @@ include_directories(include)
 # Add the executable 
 add_executable(TXTHandler
 src/main.c  
-src/NumberLib.c)
+src/TextHandler.c)
