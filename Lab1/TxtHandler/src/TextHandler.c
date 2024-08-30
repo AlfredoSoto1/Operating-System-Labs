@@ -4,63 +4,91 @@
 #include <stdlib.h>
 #include <string.h>
 
-static char** CreateParagraphBlock(unsigned int line_count, unsigned int line_length) {
-  char** paragraph = (char**)malloc(line_count * sizeof(char*));
+static void CreateParagraphBlock(Paragraph* paragraph) {
+  paragraph->text = (char**)malloc(paragraph->line_count * sizeof(char*));
 
-  for (int i = 0;i < line_count;i++) {
-    paragraph[i] = malloc((line_length + 1) * sizeof(char));
-  }
-
-  return paragraph;
+  for (int i = 0;i < paragraph->line_count;i++)
+    paragraph->text[i] = malloc((paragraph->line_length + 1) * sizeof(char));
 }
 
-static void FreeParagraph(char** paragraph, unsigned int line_count) {
-  for (unsigned int i = 0; i < line_count; i++) {
-    free(paragraph[i]);
-  }
-  free(paragraph);
+static void CleanLineBuffer() {
+  int ch;
+  while ((ch = getchar()) != '\n' && ch != EOF);
 }
 
-void PromptText() {
+void FreeParagraph(Paragraph* paragraph) {
+  for (unsigned int i = 0; i < paragraph->line_count; i++) {
+    free(paragraph->text[i]);
+  }
+  free(paragraph->text);
+}
+
+void PrintParagraph(Paragraph* paragraph) {
+  for (int i = 0; i < paragraph->line_count; i++) {
+    printf("%s\n", paragraph->text[i]);
+  }
+}
+
+void JustLeft(Paragraph* paragraph) {
+
+  for (int i = 0; i < paragraph->line_count; i++) {
+    char* line_start = paragraph->text[i];
+    // Remove leading spaces
+    while (isspace((char)*line_start)) {
+        line_start++;
+    }
+    
+    // Move the text to the start of the line
+    if (line_start != paragraph->text[i]) {
+        memmove(paragraph->text[i], line_start, strlen(line_start) + 1);
+    }
+  }
+}
+
+void JustRight(Paragraph* paragraph) {
+  Paragraph just_right;
+  CreateParagraphBlock(&just_right);
+  return just_right;
+}
+
+void JustBlock(Paragraph* paragraph) {
+  Paragraph just_block;
+  CreateParagraphBlock(&just_block);
+  return just_block;
+}
+
+Paragraph PromptTextProgram() {
   printf("Welcome to TextHandler!!\n");
 
-  unsigned int line_count;
-  unsigned int line_length;
+  Paragraph paragraph;
 
   printf("How long do you want your lines to be?\n");
-  scanf("%d", &line_length);
+  scanf("%u", &paragraph.line_length);
+
+  CleanLineBuffer();
 
   printf("How many lines would you like to have?\n");
-  scanf("%d", &line_count);
+  scanf("%u", &paragraph.line_count);
 
-  // Empty the last char used
-  getchar();
+  CleanLineBuffer();
 
   printf("Write some text to be justified with %d lines %d characters long.\n",
-         line_count, line_length);
+         paragraph.line_count, paragraph.line_length);
   printf("Press 'Enter' to record your text.\n\n\n");
 
-  char** paragraph = CreateParagraphBlock(line_count, line_length);
+  CreateParagraphBlock(&paragraph);
 
-  for (unsigned int i = 0; i < line_count; i++) {
+  for (unsigned int i = 0; i < paragraph.line_count; i++) {
     printf("Line %u: ", i + 1);
-    fgets(paragraph[i], line_length + 1, stdin);
 
+    // Get the data from terminal
+    fgets(paragraph.text[i], paragraph.line_length + 1, stdin);
+    
     // Reset text input buffer
-    getchar();
+    CleanLineBuffer();
     
     // Remove newline character if it was read
-    paragraph[i][strcspn(paragraph[i], "\n")] = '\0';
+    paragraph.text[i][strcspn(paragraph.text[i], "\n")] = '\0';
   }
-
-  printf("\nYou entered:\n");
-  for (unsigned int i = 0; i < line_count; i++) {
-    printf("%s\n", paragraph[i]);
-  }
-
-  FreeParagraph(paragraph, line_count);
+  return paragraph;
 }
-
-char* JustLeft(char* text);
-char* JustRight(char* text);
-char* JustBlock(char* text);

@@ -1,34 +1,52 @@
 #ifndef TEXT_HANDLER_H
 #define TEXT_HANDLER_H
 
+typedef struct Paragraph {
+  char** text;
+  unsigned int line_count;
+  unsigned int line_length;
+} Paragraph;
+
 /**
- * @brief Tells the user to enter some text to apply some justification.
- *
+ * @brief Prints the paragraph given
+ * 
+ * @param paragraph 
  */
-void PromptText();
+void PrintParagraph(Paragraph* paragraph);
+
+/**
+ * @brief Frees the allocated paragraph memory
+ * 
+ * @param paragraph 
+ */
+void FreeParagraph(Paragraph* paragraph);
+
+/**
+ * @brief Tells the user to enter some text to apply some justification
+ * 
+ * @return Paragraph 
+ */
+Paragraph PromptTextProgram();
 
 /**
  * @brief Justifies the text to the left
- *
- * @param text
- * @return char*
+ * 
+ * @param paragraph* 
  */
-char* JustLeft(char* text);
+void JustLeft(Paragraph* paragraph);
 
 /**
  * @brief Justifies the text to the right
- *
- * @param text
- * @return char*
+ * 
+ * @param paragraph* 
  */
-char* JustRight(char* text);
+void JustRight(Paragraph* paragraph);
 
 /**
  * @brief Justifies the text to behave as block
- *
- * @param text
- * @return char*
+ * 
+ * @param paragraph* 
  */
-char* JustBlock(char* text);
+void JustBlock(Paragraph* paragraph);
 
 #endif  // TEXT_HANDLER_H
