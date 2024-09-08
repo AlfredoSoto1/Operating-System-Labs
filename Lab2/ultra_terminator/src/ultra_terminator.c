@@ -3,8 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/wait.h>
-#include <unistd.h>
+// #include <sys/wait.h>
+// #include <unistd.h>
 
 #include "uterminator_parser.h"
 
@@ -18,9 +18,24 @@ void RunUltraTerminator() {
     // Get the latest input from terminal
     UTermParser parser = GetTerminal();
 
+    // Parse the input from terminal
     PopulateParser(&parser);
 
-    // PrintParsedTerminal(&parser);
+    for (unsigned int i = 0; i < parser.command_count; i++) {
+      char** args = parser.arguments[i];
+
+      // If the first argument is not there, skip it
+      if (args[0] == NULL) continue;
+
+      // Run a new process
+      int processid = RunProcess(parser.arguments[i][0], args);
+
+      // Wait for the process to end
+      WaitForProcess(processid);
+    }
+
+    // Free the parsed data allocated
+    FreeParser(&parser);
   } while (1);
 }
 
@@ -47,7 +62,7 @@ UTermParser GetTerminal() {
 
 int RunProcess(char* program, char** argv) {
   // Create a new child
-  int child_pid = fork();
+  int child_pid = 0;  // fork();
 
   // Leave the rest of the function to the child
   if (child_pid != 0) {
@@ -55,7 +70,7 @@ int RunProcess(char* program, char** argv) {
   }
 
   // Transform process into Greetings program
-  execvp(program, argv);
+  // execvp(program, argv);
 
   // Failed running the program
   return -1;
@@ -65,7 +80,7 @@ void WaitForProcess(int process) {
   int process_status;
   // Wait for the process to finish
   // Store the exit status to the process_status variable
-  waitpid(process, &process_status, 0);
+  // waitpid(process, &process_status, 0);
 
   // Use later if necesary
   // WEXITSTATUS(process_status[i])

@@ -30,14 +30,6 @@ void FreeParser(UTermParser* parser) {
   free(parser->arguments);
 }
 
-void print_sub(char* start, char* end) {
-  while (start < end) {
-    putchar(*start);
-    start++;
-  }
-  putchar('\n');
-}
-
 void PopulateParser(UTermParser* parser) {
   // Count the ammount of commands are in the line
   parser->command_count = CountChar(parser->full_line, NULL, ';') + 1;
@@ -56,7 +48,7 @@ void PopulateParser(UTermParser* parser) {
     }
 
     // Obtain the command arguments
-    parser->arguments[command_index++] = SetCommandArgs(start, endl);
+    parser->arguments[command_index++] = GetCommandArgs(start, endl);
 
     // Exit after scanning all commands
     if (*endl == '\0') break;
@@ -67,7 +59,7 @@ void PopulateParser(UTermParser* parser) {
   } while (1);
 }
 
-char** SetCommandArgs(char* str, char* endstr) {
+char** GetCommandArgs(char* str, char* endstr) {
   // Set the number of arguments
   int argc = CountChar(str, ';', ' ') + 1;
 
@@ -79,20 +71,29 @@ char** SetCommandArgs(char* str, char* endstr) {
   char* last = begin;
 
   do {
-    while (*last != ' ') {
+    // Scan for each each argument separated by spaces
+    while (*last != ' ' && last != endstr) {
       last++;
     }
-    line_args[letter_index] = (char*)malloc((last - str + 1) * sizeof(char));
 
-    memcpy(line_args[letter_index], str, last - str);
+    // If it starts with an empty space, skip it
+    if (begin == last) {
+      begin = ++last;
+      continue;
+    }
+
+    // Copy the argument into the corresponding allocated block
+    line_args[letter_index] = (char*)malloc((last - begin + 1) * sizeof(char));
+    memcpy(line_args[letter_index], begin, last - begin);
 
     // Set terminating char of the argument
-    line_args[letter_index][last - str] = '\0';
+    line_args[letter_index++][last - begin] = '\0';
 
-    letter_index++;
-
+    // Exit argument scanning if reached end
+    if (last == endstr) break;
     begin = ++last;
-  } while (last != endstr);
+
+  } while (1);
 
   // Set the end of the list of arguments
   line_args[letter_index] = NULL;
