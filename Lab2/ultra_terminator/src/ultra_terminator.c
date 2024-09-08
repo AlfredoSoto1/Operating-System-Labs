@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/wait.h>
+// #include <sys/wait.h>
 #include <unistd.h>
 
 #define COMMAND_SEPARATION ";"
@@ -44,39 +44,6 @@ UTermParser GetTerminal() {
   // char* args[] = {"ls", "-la", NULL};
   // int status = RunProcess(command, args);
   // printf("Status: %d\n", status);
-}
-
-int CountChar(char* str, char target) {
-  int count;
-  while (*str != '\0') {
-    // If character is found, increase the count
-    if (*str == target) count++;
-    // Go forward
-    str++;
-  }
-  return count;
-}
-
-int GetCommands(UTermParser* parser) {
-  int count = 0;
-
-  for (int i = 0; i < strlen(parser->full_line); i++) {
-    if (count >= MAX_COMMANDS) {
-      printf("ultra_terminator > Too many commands entered (try less than %d)",
-             MAX_COMMANDS);
-      return -1;
-    }
-
-    // Obtain each individual locaiton of where each command ends
-    if (parser->full_line[i] == ';') {
-      parser->command[count++] = &parser->full_line[i];
-    }
-  }
-
-  // Set last to be null to end array
-  parser->command[count] = NULL;
-
-  return 0;
 }
 
 int GetCommandArguments(UTermParser* parser) {
