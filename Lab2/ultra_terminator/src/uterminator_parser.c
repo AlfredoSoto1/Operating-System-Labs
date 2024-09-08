@@ -32,7 +32,7 @@ void FreeParser(UTermParser* parser) {
 
 void PopulateParser(UTermParser* parser) {
   // Count the ammount of commands are in the line
-  parser->command_count = CountChar(parser->full_line, NULL, ';') + 1;
+  parser->command_count = CountChar(parser->full_line, '\0', ';') + 1;
 
   // Reserve space for each command
   parser->arguments = (char***)malloc(parser->command_count * sizeof(char**));
@@ -76,8 +76,11 @@ char** GetCommandArgs(char* str, char* endstr) {
       last++;
     }
 
-    // If it starts with an empty space, skip it
     if (begin == last) {
+      // Exit the scan if it reached the end with a space
+      if (*begin == '\0' || begin == endstr) break;
+
+      // If it starts with an empty space, skip it
       begin = ++last;
       continue;
     }
