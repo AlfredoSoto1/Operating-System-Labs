@@ -1,14 +1,12 @@
 #include "ultra_terminator.h"
 
-#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-// #include <sys/wait.h>
+#include <sys/wait.h>
 #include <unistd.h>
 
-#define COMMAND_SEPARATION ";"
-#define COMMAND_ARGUMENT_SEPARATION " "
+#include "uterminator_parser.h"
 
 static void ClearInBuffer() {
   char ch;
@@ -20,8 +18,9 @@ void RunUltraTerminator() {
     // Get the latest input from terminal
     UTermParser parser = GetTerminal();
 
-    GetCommands(&parser);
+    PopulateParser(&parser);
 
+    PrintParsedTerminal(&parser);
   } while (1);
 }
 
@@ -44,30 +43,6 @@ UTermParser GetTerminal() {
   // char* args[] = {"ls", "-la", NULL};
   // int status = RunProcess(command, args);
   // printf("Status: %d\n", status);
-}
-
-int GetCommandArguments(UTermParser* parser) {
-  int count = 0;
-
-  for (int i = 0; i < strlen(parser->full_line); i++) {
-    if (count >= MAX_ARGUMENTS) {
-      printf(
-          "ultra_terminator > Too many arguments per command entered (try less "
-          "than %d)",
-          MAX_ARGUMENTS);
-      return -1;
-    }
-
-    // Obtain each individual locaiton of where each command ends
-    if (parser->full_line[i] == ';') {
-      parser->command[count++] = &parser->full_line[i];
-    }
-  }
-
-  // Set last to be null to end array
-  parser->command[count] = NULL;
-
-  return 0;
 }
 
 int RunProcess(char* program, char** argv) {

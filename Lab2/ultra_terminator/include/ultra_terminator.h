@@ -1,11 +1,11 @@
 #ifndef ULTRA_TERMINATOR_H
 #define ULTRA_TERMINATOR_H
 
+struct UTermParser;
+
 void RunUltraTerminator();
 
-UTermParser GetTerminal();
-
-int GetCommandArguments(UTermParser* parser);
+struct UTermParser GetTerminal();
 
 int RunProcess(char* program, char** argv);
 
