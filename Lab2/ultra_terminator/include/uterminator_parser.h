@@ -2,9 +2,9 @@
 #define ULTRA_TERMINATOR_PARSER_H
 
 typedef struct UTermParser {
-  char full_line[50];
-  char*** arguments;
-  unsigned int command_count;
+  char full_line[100];  // Max of 100 characters per line for this terminal
+  char*** arguments;    // Arguments that the terminal will use to process
+  unsigned int command_count;  // Number of commands that will be processed
 } UTermParser;
 
 /**
