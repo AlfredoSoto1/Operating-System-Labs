@@ -16,29 +16,6 @@ void PrintParsedTerminal(UTermParser* parser) {
   }
 }
 
-void PopulateParser(UTermParser* parser) {
-  // Count the ammount of commands are in the line
-  parser->command_count = CountChar(parser->full_line, ';') + 1;
-
-  // Reserve space for each command
-  parser->arguments = (char***)malloc(parser->command_count * sizeof(char**));
-
-  // Duplicate the full_line to work with each token as a single command string
-  int command_index = 0;
-  char* savepoint;
-  char* line_copy = strdup(parser->full_line);
-  char* command = Tokenize(line_copy, ";", &savepoint);
-
-  // Iterate over each command to obtain its arguments
-  while (command != NULL) {
-    printf("test command: %s\n", command);
-    parser->arguments[command_index++] = SplitCommand(command);
-    command = Tokenize(NULL, ";", &savepoint);
-  }
-
-  free(line_copy);
-}
-
 void FreeParser(UTermParser* parser) {
   for (int i = 0; i < parser->command_count; i++) {
     int argument = 0;
@@ -53,58 +30,82 @@ void FreeParser(UTermParser* parser) {
   free(parser->arguments);
 }
 
-char** SplitCommand(char* command) {
+void print_sub(char* start, char* end) {
+  while (start < end) {
+    putchar(*start);
+    start++;
+  }
+  putchar('\n');
+}
+
+void PopulateParser(UTermParser* parser) {
+  // Count the ammount of commands are in the line
+  parser->command_count = CountChar(parser->full_line, NULL, ';') + 1;
+
+  // Reserve space for each command
+  parser->arguments = (char***)malloc(parser->command_count * sizeof(char**));
+
+  char* start = parser->full_line;
+  char* endl = start;
+  int command_index = 0;
+
+  do {
+    // Move the end pointer to each ';' to complete a command
+    while (*endl != ';' && *endl != '\0') {
+      endl++;
+    }
+
+    // Obtain the command arguments
+    parser->arguments[command_index++] = SetCommandArgs(start, endl);
+
+    // Exit after scanning all commands
+    if (*endl == '\0') break;
+
+    // Go to the next command
+    start = ++endl;
+
+  } while (1);
+}
+
+char** SetCommandArgs(char* str, char* endstr) {
   // Set the number of arguments
-  int argc = CountChar(command, ' ') + 1;
+  int argc = CountChar(str, ';', ' ') + 1;
 
   // Allocate space for each argument inside the command
-  char** line_args = (char**)malloc(argc * sizeof(char*));
+  char** line_args = (char**)malloc((argc + 1) * sizeof(char*));
 
   int letter_index = 0;
-  char* command_copy = strdup(command);
-  char* argument = strtok(command_copy, " \t");
+  char* begin = str;
+  char* last = begin;
 
-  while (argument != NULL) {
-    if (*argument == '\n') continue;
+  do {
+    while (*last != ' ') {
+      last++;
+    }
+    line_args[letter_index] = (char*)malloc((last - str + 1) * sizeof(char));
 
-    // Copy the argument into the argument list. This creates a new allocation
-    // that has to be handled later.
-    line_args[letter_index++] = strdup(argument);
-    argument = strtok(NULL, " \t");
-  }
+    memcpy(line_args[letter_index], str, last - str);
 
+    // Set terminating char of the argument
+    line_args[letter_index][last - str] = '\0';
+
+    letter_index++;
+
+    begin = ++last;
+  } while (last != endstr);
+
+  // Set the end of the list of arguments
   line_args[letter_index] = NULL;
-  free(command_copy);
 
   return line_args;
 }
 
-int CountChar(char* str, char target) {
+int CountChar(char* str, char endl, char target) {
   int count = 0;
-  while (*str != '\0') {
+  while (*str != endl && *str != '\0') {
     // If character is found, increase the count
     if (*str == target) count++;
     str++;
   }
   return count;
-}
-
-char* Tokenize(char* str, char* delimeter, char** savepoint) {
-  char* token;
-
-  // This will set up the savepoint for the first call
-  if (str != NULL) {
-    *savepoint = str;
-  }
-
-  // Jump to the next savepoint which is right after the first delimeter
-  *savepoint += strspn(*savepoint, delimeter);
-
-  // Check if it has reached the end
-  if (**savepoint == '\0') return NULL;
-
-  // Token will start at the savepoint
-  token = *savepoint;
-
-  return token;
 }

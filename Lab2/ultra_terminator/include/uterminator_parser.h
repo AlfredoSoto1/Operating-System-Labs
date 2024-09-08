@@ -13,10 +13,8 @@ void PopulateParser(UTermParser* parser);
 
 void FreeParser(UTermParser* parser);
 
-char** SplitCommand(char* command);
+char** SetCommandArgs(char* str, char* endstr);
 
-int CountChar(char* str, char target);
-
-char* Tokenize(char* str, char* delimeter, char** savepoint);
+int CountChar(char* str, char endl, char target);
 
 #endif  // ULTRA_TERMINATOR_PARSER_H

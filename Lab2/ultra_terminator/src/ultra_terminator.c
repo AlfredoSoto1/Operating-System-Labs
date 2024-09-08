@@ -20,7 +20,7 @@ void RunUltraTerminator() {
 
     PopulateParser(&parser);
 
-    PrintParsedTerminal(&parser);
+    // PrintParsedTerminal(&parser);
   } while (1);
 }
 
