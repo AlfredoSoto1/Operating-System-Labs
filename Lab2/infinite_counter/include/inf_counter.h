@@ -2,6 +2,11 @@
 #define INF_COUNTER_H
 
 /**
+ * @brief Prepares the signals
+ */
+void SignalPrepare();
+
+/**
  * @brief Handles the user signal 1
  *
  * @param sig_num

@@ -19,7 +19,7 @@ void HandlerSig2(int sig_num) {
   direction *= -1;
 }
 
-void UpdateProgramCounter() {
+void SignalPrepare() {
   struct sigaction sig_1;
   struct sigaction sig_2;
 
@@ -28,12 +28,16 @@ void UpdateProgramCounter() {
 
   sigaction(SIGUSR1, &sig_1, NULL);
   sigaction(SIGUSR2, &sig_2, NULL);
+}
+
+void UpdateProgramCounter() {
+  SignalPrepare();
 
   while (1) {
-    // Increase the global counter
-    global_counter++;
-
     printf("I'm counting, and my count is %d\n", global_counter);
+
+    // Increase the global counter by the set direction
+    global_counter += direction;
 
     // Wait for 1 second
     sleep(1);
