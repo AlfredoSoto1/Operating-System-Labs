@@ -1,3 +1,5 @@
+#ifndef SPAWNER_H
+#define SPAWNER_H
 
 /**
  * @brief Spawns a new children using fork()
@@ -14,3 +16,5 @@ int SpawnChildren(const char* program);
  * @param process_count
  */
 void WaitForChildren(int* processes, const unsigned int process_count);
+
+#endif  // SPAWNER_H
