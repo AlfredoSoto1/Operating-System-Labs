@@ -1,10 +1,6 @@
-#include <stdio.h>
-
-#include "ultra_terminator.h"
+#include "inf_counter.h"
 
 int main() {
-  // Start Ultra Terminator program
-  RunUltraTerminator();
-
+  UpdateProgramCounter();
   return 0;
 }
