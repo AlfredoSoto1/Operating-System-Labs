@@ -23,6 +23,8 @@ int main(int argc, char* argv[]) {
       printf(
           "All registered processes are dead. Program will end "
           "now.\n");
+
+      free(arguments.program_ids);
       return 0;
     }
 
@@ -43,6 +45,7 @@ int main(int argc, char* argv[]) {
         HandleKillSelection(&arguments);
         break;
       default:
+        free(arguments.program_ids);
         return 0;  // Exit program
     }
 

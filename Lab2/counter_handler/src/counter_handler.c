@@ -88,17 +88,19 @@ void HandleKillSelection(InputArguments* arguments) {
 
   // Send signal
   kill(process_selected, SIGKILL);
+
+  // Wait for processes to terminate
+  sleep(2);
 }
 
 int AtleastOneAlive(InputArguments* arguments) {
   // Check if atleast one process is still alive
-  int process_alive = 0;
   for (int i = 0; i < arguments->count; i++) {
     if (kill(arguments->program_ids[i], 0) == 0) {
-      process_alive++;
+      return 1;
     }
   }
 
   // If there is no process alive it will return false -> 0
-  return process_alive != 0;
+  return 0;
 }
