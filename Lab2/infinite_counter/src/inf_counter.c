@@ -34,7 +34,7 @@ void UpdateProgramCounter() {
   SignalPrepare();
 
   while (1) {
-    printf("I'm counting, and my count is %d\n", global_counter);
+    printf("<%d>I'm counting, and my count is %d\n", getpid(), global_counter);
 
     // Increase the global counter by the set direction
     global_counter += direction;
