@@ -16,4 +16,6 @@ src/main.c
 src/BlockSemaphore.c
 src/Reader.c
 src/SharedBlock.c
-src/Writer.c)
+src/Writer.c
+src/MyTime.c
+src/MemoryQueue.c)

@@ -5,7 +5,7 @@
 #include <sys/shm.h>
 
 /**
- *
+ * @brief SharedBlock structure
  */
 typedef struct SharedBlock {
   void *data;
@@ -15,7 +15,7 @@ typedef struct SharedBlock {
 } SharedBlock;
 
 /**
- * @brief
+ * @brief Creates in memory a block of shared memory to use across processes
  *
  * @param blockSize
  *
@@ -24,14 +24,15 @@ typedef struct SharedBlock {
 SharedBlock CreateBlock(int blockSize);
 
 /**
- * @brief
+ * @brief It "closes" the connection between the program and the shared block
+ * provided.
  *
  * @param sharedBlock
  */
 void DetachSharedBlock(SharedBlock *sharedBlock);
 
 /**
- * @brief
+ * @brief Frees the given shared memory block located at /dev/shm/
  *
  * @param sharedBlock
  */

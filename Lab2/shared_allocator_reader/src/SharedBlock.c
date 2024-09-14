@@ -11,6 +11,7 @@ SharedBlock CreateBlock(int blockSize) {
   if (block.token == -1) {
     perror("ftok");
     block.error = 1;
+    return block;
   }
 
   // Locate the shared memory segment
@@ -19,15 +20,17 @@ SharedBlock CreateBlock(int blockSize) {
   if (block.blockid == -1) {
     perror("shmget failed");
     block.error = 2;
+    return block;
   }
 
   // map the block into the process adress space
   block.data = shmat(block.blockid, NULL, 0);
 
   // Handle if data could not be obtained
-  if (block.data == (char *)-1) {
+  if (block.data == (void *)-1) {
     perror("shmat failed");
     block.error = 3;
+    return block;
   }
 
   return block;

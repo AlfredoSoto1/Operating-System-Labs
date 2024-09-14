@@ -3,9 +3,11 @@
 #include <stdio.h>
 
 #include "BlockSemaphore.h"
+#include "MemoryQueue.h"
+#include "MyTime.h"
 #include "SharedBlock.h"
 
-void RunWriter() {
+void RunSharedWriter() {
   // Create a semaphore
   Semaphore sem = CreateSemaphore();
 
@@ -16,11 +18,8 @@ void RunWriter() {
 
   if (block.error != 0) return;
 
-  printf("writing will start\n");
-  // Write to the shared memory the data
-  for (int i = 0; i < COUNT; i++) {
-    SyncSender(&sem, WriteData, &block);
-  }
+  // Sync some process to produce
+  SyncSender(&sem, WriteSharedData, &block);
 
   // Close the semaphore
   CloseSemaphore(&sem);
@@ -29,16 +28,40 @@ void RunWriter() {
   DetachSharedBlock(&block);
 }
 
-void WriteData(void* block) {
-  static long counter = 0;
+void WriteSharedData(SharedBlock* block) {
+  MyTime intiial_time = CurrentTimeMillis();
 
-  SharedBlock* shd_block = (SharedBlock*)block;
+  for (int i = 0; i < COUNT; i++) {
+    // Turn the void* to int*
+    int* val = (int*)block->data;
 
-  // Turn the void* to int*
-  long* reserved_data = (long*)shd_block->data;
+    // Write the numbers to the data array buffer
+    val[i] = i + 1;
+  }
 
-  // Write the numbers to the data array buffer
-  reserved_data[counter] = counter;
+  MyTime elapsed_time = CurrentTimeMillis() - intiial_time;
 
-  counter++;
+  printf("Time Taken to write [SHM]: %lldms\n", elapsed_time);
+}
+
+void RunWriterMQ() {
+  // Create queue
+  Queue queue = CreateMemoryQueue();
+
+  if (queue.error != 0) return;
+
+  MyTime intiial_time = CurrentTimeMillis();
+  for (int i = 1; i <= COUNT; ++i) {
+    int* data = (int*)queue.buffer;
+    *data = i;
+    Enqueue(&queue);
+  }
+
+  MyTime elapsed_time = CurrentTimeMillis() - intiial_time;
+
+  printf("Time Taken to write [QUEUE]: %lldms\n", elapsed_time);
+
+  CloseQueue(&queue);
+
+  // The reader will be incharged of freeing the queue
 }

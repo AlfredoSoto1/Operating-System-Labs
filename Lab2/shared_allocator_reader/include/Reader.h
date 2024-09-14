@@ -1,11 +1,28 @@
 #ifndef READER_H
 #define READER_H
 
-#define COUNT 10
-#define SHM_SIZE COUNT * sizeof(long)
+#define COUNT 1000000
+#define SHM_SIZE COUNT * sizeof(int)
 
-void RunReader();
+typedef struct SharedBlock SharedBlock;
 
-void ReadData(void* block);
+/**
+ * @brief Runs a shared memory block to read from it
+ *
+ */
+void RunSharedReader();
+
+/**
+ * @brief Reads data into the shared memory block given.
+ *
+ * @param block
+ */
+void ReaderSharedData(SharedBlock* block);
+
+/**
+ * @brief Runs a memory queue block to read from it
+ *
+ */
+void RunReaderMQ();
 
 #endif  // READER_H
