@@ -12,4 +12,8 @@ include_directories(include)
 
 # Add the executable 
 add_executable(${CMAKE_PROJECT_NAME}
-src/main.c)
+src/main.c
+src/BlockSemaphore.c
+src/Reader.c
+src/SharedBlock.c
+src/Writer.c)
