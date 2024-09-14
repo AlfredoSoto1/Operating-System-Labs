@@ -16,6 +16,7 @@ void RunWriter() {
 
   if (block.error != 0) return;
 
+  printf("writing will start\n");
   // Write to the shared memory the data
   for (int i = 0; i < COUNT; i++) {
     SyncSender(&sem, WriteData, &block);
@@ -29,12 +30,12 @@ void RunWriter() {
 }
 
 void WriteData(void* block) {
-  static int counter = 0;
+  static long counter = 0;
 
   SharedBlock* shd_block = (SharedBlock*)block;
 
   // Turn the void* to int*
-  int* reserved_data = (int*)shd_block->data;
+  long* reserved_data = (long*)shd_block->data;
 
   // Write the numbers to the data array buffer
   reserved_data[counter] = counter;

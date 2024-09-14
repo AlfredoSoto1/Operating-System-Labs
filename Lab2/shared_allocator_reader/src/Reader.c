@@ -16,6 +16,7 @@ void RunReader() {
 
   if (block.error != 0) return;
 
+  printf("reading will start\n");
   while (1) {
     // Syncronize the read data function with the semaphores
     SyncReceiver(&sem, ReadData, &block);
@@ -34,8 +35,8 @@ void RunReader() {
 void ReadData(void* block) {
   SharedBlock* shd_block = (SharedBlock*)block;
 
-  for (int i = 0; i < COUNT; i++) {
-    int* val = (int*)shd_block->data;
-    printf("Reader: Reading from shared memory: %d\n", val[i]);
+  for (long i = 0; i < COUNT; i++) {
+    long* val = (long*)shd_block->data;
+    printf("Reader: Reading from shared memory: [%d] %d\n", i, val[i]);
   }
 }

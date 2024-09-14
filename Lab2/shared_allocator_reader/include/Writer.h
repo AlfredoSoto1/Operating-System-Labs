@@ -1,8 +1,8 @@
 #ifndef WRITER_H
 #define WRITER_H
 
-#define COUNT 1000000
-#define SHM_SIZE COUNT * sizeof(int)
+#define COUNT 10
+#define SHM_SIZE COUNT * sizeof(long)
 
 void RunWriter();
 
