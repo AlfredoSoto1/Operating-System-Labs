@@ -32,12 +32,12 @@ void RunSharedReader() {
 void ReaderSharedData(SharedBlock* block) {
   MyTime intiial_time = CurrentTimeMillis();
 
-  int sum = 0;
+  long sum = 0;
   for (int i = 0; i < COUNT; i++) {
     int* val = (int*)block->data;
     sum += val[i];
   }
-  printf("The sum of the numbers [SHM] is: %d\n", sum);
+  printf("The sum of the numbers [SHM] is: %ld\n", sum);
 
   MyTime elapsed_time = CurrentTimeMillis() - intiial_time;
 
@@ -51,7 +51,7 @@ void RunReaderMQ() {
   if (queue.error != 0) return;
 
   MyTime intiial_time = CurrentTimeMillis();
-  int sum = 0;
+  long sum = 0;
 
   for (int i = 0; i < COUNT; i++) {
     // Read from queue the front block data
@@ -66,7 +66,7 @@ void RunReaderMQ() {
     sum += *(int*)queue.buffer;
   }
 
-  printf("The sum of the numbers [QUEUE] is: %d\n", sum);
+  printf("The sum of the numbers [QUEUE] is: %ld\n", sum);
 
   MyTime elapsed_time = CurrentTimeMillis() - intiial_time;
 
