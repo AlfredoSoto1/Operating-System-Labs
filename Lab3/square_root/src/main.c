@@ -1,4 +1,7 @@
 #include <pthread.h>
+#include <stdlib.h>
+
+unsigned char* input_buffer;
 
 void* FileHandlerPrepare(void* param) {
   // Write a program that, as soon as it starts, creates an initial thread that
@@ -6,6 +9,39 @@ void* FileHandlerPrepare(void* param) {
   // returns 1. If it does not exist, the thread creates the file and writes 10,
   // 000 pseudo - random unsigned 8 - bit integer values, one below the other,
   // and returns 0.
+
+  int file;
+  int numbers[5];
+
+  // Try to open the file for reading
+  file = fopen("numbers.txt", "r");
+
+  if (file != NULL) {
+    // If the file exists, read and print its contents
+    printf("File exists. Reading content:\n");
+    for (int i = 0; i < 5; i++) {
+      fscanf(file, "%d", &numbers[i]);  // Read each integer
+      printf("Number %d: %d\n", i + 1, numbers[i]);
+    }
+    fclose(file);  // Close the file after reading
+  } else {
+    // If the file doesn't exist, create and write 5 numbers
+    printf("File does not exist. Creating and writing numbers.\n");
+    file = fopen("numbers.txt", "w");
+
+    if (file == NULL) {
+      printf("Error creating file.\n");
+      return 1;
+    }
+
+    // Write 5 numbers into the file
+    for (int i = 1; i <= 5; i++) {
+      fprintf(file, "%d\n", i * 10);  // Writing numbers (10, 20, 30, 40, 50)
+    }
+
+    fclose(file);  // Close the file after writing
+    printf("Numbers written to file.\n");
+  }
 }
 
 void* BufferHandler(void* param) {
@@ -15,7 +51,7 @@ void* BufferHandler(void* param) {
   // file.
   long buffer_length = 0;
   long n_read_values = 0;
-  unsigned char* input_buffer = malloc(sizeof(unsigned char) * buffer_length);
+  input_buffer = malloc(sizeof(unsigned char) * buffer_length);
 
   // Read data from file and store it on the buffer
 }
@@ -37,21 +73,13 @@ void* CalculateSqrt(void* param) {
   // index named n_processed_values.
 }
 
-double SqrtIter(double number, int n) {
+double SqrtFunction(double number) {
   double guess = number / 2.0;
-
-  for (int i = 0; i < n; i++) {
+  // Iterate over the function iteratively over 10 terms.
+  for (int i = 0; i < 10; i++) {
     guess = 0.5 * (guess + number / guess);
   }
-
   return guess;
-  // if (n == 0) {
-  //   return guess;
-  // }
-
-  // double better_guess = SqrtIter(number, guess / 2.0, n - 1) +
-  //                       number / SqrtIter(number, guess / 2.0, n - 1);
-  // return 0.5 * (better_guess);
 }
 
 void* FileHandlerOutput(void* param) {
@@ -75,6 +103,6 @@ void BootFileHandler() {
 }
 
 int main() {
-  //
+  printf("sqrt %lf\n", SqrtFunction(2));
   return 0;
 }
