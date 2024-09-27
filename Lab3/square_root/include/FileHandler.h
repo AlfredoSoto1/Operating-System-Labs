@@ -3,18 +3,14 @@
 
 #include <stdio.h>
 
+#define LENGTH_OF_FILE 10000
+
 /**
  * @brief
  *
  * @param file
  */
 void WriteToFile(FILE* file);
-
-/**
- * @brief
- *
- */
-void ReadFromFile();
 
 /**
  * @brief

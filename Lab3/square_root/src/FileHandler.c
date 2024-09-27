@@ -3,15 +3,11 @@
 #include <pthread.h>
 #include <stdlib.h>
 
-#define LENGTH_OF_FILE 10000
-
 void WriteToFile(FILE* file) {
   for (int i = 0; i < LENGTH_OF_FILE; i++) {
-    fprintf(file, "%d\n", i);
+    fprintf(file, "%d\n", (unsigned char)(i * i));
   }
 }
-
-void ReadFromFile() {}
 
 void* FileHandlerPrepare(void* param) {
   int exit_flag = *(int*)param;

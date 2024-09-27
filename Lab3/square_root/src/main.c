@@ -1,10 +1,8 @@
-#include <pthread.h>
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "FileHandler.h"
+#include "RootTask.h"
 
 int main() {
   BootFileHandler();
+  RunRootTask();
   return 0;
 }

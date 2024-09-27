@@ -4,6 +4,8 @@
 typedef struct RootTask {
   unsigned long n_read_values;
   unsigned char* input_buffer;
+  unsigned long n_processed_values;
+  double* processed_buffer;
 } RootTask;
 
 extern RootTask root_task;
