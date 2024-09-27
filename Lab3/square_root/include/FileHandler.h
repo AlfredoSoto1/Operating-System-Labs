@@ -6,14 +6,14 @@
 #define LENGTH_OF_FILE 10000
 
 /**
- * @brief
+ * @brief Writes to the numbers.txt file a set of random numbers from [0, 255]
  *
  * @param file
  */
 void WriteToFile(FILE* file);
 
 /**
- * @brief
+ * @brief Prepares the file creation if not existant previously
  *
  * @param param
  * @return void*
@@ -21,7 +21,7 @@ void WriteToFile(FILE* file);
 void* FileHandlerPrepare(void* param);
 
 /**
- * @brief
+ * @brief Kicks off thread to run this when application boots
  *
  */
 void BootFileHandler();

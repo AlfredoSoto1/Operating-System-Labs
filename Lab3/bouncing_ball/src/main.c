@@ -3,15 +3,64 @@
 #include <string.h>
 #include <unistd.h>
 
-typedef struct {
+typedef struct BallProperties {
   int x;
   int y;
-} BallPosition;
+  int dx;
+  int dy;
+} BallProperties;
+
+typedef struct Screen {
+  int row;
+  int col;
+} Screen;
 
 #define ENTER_NCURSES 10
 
+void* ProcessPosition(void* process_position_params) {
+  Screen* screen = (Screen*)&process_position_params[0];
+  BallProperties* properties = (BallProperties*)&process_position_params[1];
+
+  properties->dx = 1;
+  properties->dy = 1;
+
+  while (1) {
+    properties->x += properties->dx;
+    properties->y += properties->dy;
+    if (properties->x >= screen->col - 1) {
+      properties->dx = -1;
+    }
+    if (properties->y >= screen->row - 1) {
+      properties->dy = -1;
+    }
+    if (properties->x <= 1) {
+      properties->dx = 1;
+    }
+    if (properties->y <= 1) {
+      properties->dy = 1;
+    }
+
+    // Sleep for 100ms
+    usleep(100000);
+  }
+}
+
 int main() {
+  Screen screen;
+
+  BallProperties properties;
+  properties.x = 10;
+  properties.y = 20;
+
+  void* process_position_params[2];
+
+  process_position_params[0] = &screen;
+  process_position_params[1] = &properties;
+
   pthread_t id1, id2;
+
+  pthread_create(&id1, NULL, ProcessPosition, process_position_params);
+  pthread_join(id1, NULL);
 
   initscr();
   keypad(stdscr, TRUE);
@@ -19,13 +68,7 @@ int main() {
 
   curs_set(0);
 
-  BallPosition ball_pos;
   int counter_val = 0;
-  int dx, dy;
-  int row, col;
-
-  ball_pos.x = 10;
-  ball_pos.y = 20;
 
   int key_stroke;
   int break_loop = 0;
@@ -46,30 +89,13 @@ int main() {
     }
   }
 
-  dx = dy = 1;
   while (1) {
     clear();
-    getmaxyx(stdscr, row, col); /* Obtiene el numbero de filas y columnas */
+    // Obtiene el numbero de filas y columnas
+    getmaxyx(stdscr, screen.row, screen.col);
     mvprintw(0, 0, "%d", counter_val++);
-    mvprintw(ball_pos.y, ball_pos.x, "o");
+    mvprintw(properties.y, properties.x, "o");
     refresh();
-
-    ball_pos.x += dx;
-    ball_pos.y += dy;
-    if (ball_pos.x >= col - 1) {
-      dx = -1;
-    }
-    if (ball_pos.y >= row - 1) {
-      dy = -1;
-    }
-    if (ball_pos.x <= 1) {
-      dx = 1;
-    }
-    if (ball_pos.y <= 1) {
-      dy = 1;
-    }
-
-    usleep(100000); /* Duerme por 100ms */
   }
 
   getch();
