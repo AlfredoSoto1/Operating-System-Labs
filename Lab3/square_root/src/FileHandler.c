@@ -4,8 +4,13 @@
 #include <stdlib.h>
 
 void WriteToFile(FILE* file) {
+  // Set the seed
+  srand(time(0));
+
+  // Iterate over all lines of the file to be set a new value
   for (int i = 0; i < LENGTH_OF_FILE; i++) {
-    fprintf(file, "%d\n", (unsigned char)(i * i));
+    unsigned char number = rand() % 256;
+    fprintf(file, "%d\n", (unsigned char)(number * number));
   }
 }
 

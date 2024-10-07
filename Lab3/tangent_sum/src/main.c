@@ -8,6 +8,7 @@
 #define DATA_LENGTH 1000000  // One million
 
 int main() {
+  MyTime start = CurrentTimeMillis();
   // Initialize array of one million integers
   // Fill out the array from numbers of [1, 1000000]
   double* numbers = malloc(DATA_LENGTH * sizeof(double));
@@ -27,8 +28,12 @@ int main() {
   WorkloadResult results;
   ObtainResult(&results, WORKLOAD_P, workload);
 
-  printf("Total sum: %lf in %lldms collectively\n", results.computation_result,
-         results.time_taken);
+  MyTime end = CurrentTimeMillis();
+
+  printf(
+      "Total sum: %lf in %lldms as sum of each thread. Total time in main: "
+      "%lldms\n",
+      results.computation_result, results.time_taken, end - start);
 
   free(workload);
   free(numbers);

@@ -29,6 +29,7 @@ typedef struct WorkloadResult {
  * @param part_count number of partitions
  * @param data block of data in reference
  * @param data_length length of the block of data
+ * @return PartitionWorkload*
  */
 PartitionWorkload* PreparePW(int part_count, double* data, long data_length);
 
@@ -44,7 +45,7 @@ void ProcessPartitionWorkload(int part_count, PartitionWorkload* workload);
  * @brief Individial paritition that does the sum
  *
  * @param partition_workload
- * @return NULL
+ * @return void*
  */
 void* PartitionSumWorkload(void* partition_workload);
 

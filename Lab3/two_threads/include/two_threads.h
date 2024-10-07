@@ -44,7 +44,7 @@ void SpawnThreads();
  * @brief This function listens for the user's input.
  *
  * @param param
- * @return NULL
+ * @return void*
  */
 void* ProcessInput(void* param);
 
@@ -52,7 +52,7 @@ void* ProcessInput(void* param);
  * @brief This function computes in a asynchronously the input from the user.
  *
  * @param param
- * @return NULL
+ * @return void*
  */
 void* ProcessComputation(void* param);
 
