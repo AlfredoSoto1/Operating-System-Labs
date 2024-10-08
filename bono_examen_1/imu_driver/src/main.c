@@ -7,8 +7,9 @@
 #include <time.h>
 #include <unistd.h>
 
-#define PERIOD_MS 500
+#define PERIOD_MS 200
 
+double timer_time = 0.0;
 int enable_writing_flg = 0;
 
 typedef struct {
@@ -32,19 +33,24 @@ void InitBotState(BotState* state) {
 }
 
 void UpdateBotState(BotState* state) {
-  // Increase the time of the bot
-  state->time += 0.2;
+  double delta_time = timer_time - state->time;
+
+  // Set the current time
+  state->time = timer_time;
 
   // Update bot's velocity
-  state->v_x = state->v_x + state->acc_x * state->time;
-  state->v_y = state->v_y + state->acc_y * state->time;
+  state->v_x = state->v_x + state->acc_x * delta_time;
+  state->v_y = state->v_y + state->acc_y * delta_time;
 
   // Update bot's position after calculating the new velocity
-  state->p_x = state->p_x + state->v_x * state->time;
-  state->p_y = state->p_y + state->v_y * state->time;
+  state->p_x = state->p_x + state->v_x * delta_time;
+  state->p_y = state->p_y + state->v_y * delta_time;
 }
 
 void HandleTimeSignal(int sig) {
+  // Increase the time by its assigned period
+  timer_time += PERIOD_MS / 1000.0;
+
   // Enable writing after 200ms.
   enable_writing_flg = 1;
 
@@ -96,8 +102,9 @@ void PollSignalEvent(FILE* imu_file) {
         InitBotState(&state);
       } else {
         UpdateBotState(&state);
-        printf("%.2lf, %lf, %lf, %lf, %lf, %lf, %lf\n", state.time, state.p_x,
-               state.p_y, state.v_x, state.v_y, state.acc_x, state.acc_y);
+        printf("%.2lf, %.4lf, %.4lf, %.4lf, %.4lf, %.4lf, %.4lf\n", state.time,
+               state.p_x, state.p_y, state.v_x, state.v_y, state.acc_x,
+               state.acc_y);
       }
 
       WriteCurrentState(imu_file, &state);
@@ -129,14 +136,18 @@ int ReadPreviousState(FILE* imu_file, BotState* state) {
     fseek(imu_file, 0, SEEK_SET);
   }
 
+  char line[256];
   // Read each value from the imu_file line into the bot state.
-  if (fscanf(imu_file, "%.2lf, %lf, %lf, %lf, %lf, %lf, %lf", &state->time,
-             &state->p_x, &state->p_y, &state->v_x, &state->v_y, &state->acc_x,
-             &state->acc_y) != 7) {
-    printf("error\n");
-    return -1;  // Error reading values
+  if (fgets(line, sizeof(line), imu_file) == NULL) {
+    return -1;
   }
 
+  // Parse the line using sscanf
+  if (sscanf(line, "%lf, %lf, %lf, %lf, %lf, %lf, %lf", &state->time,
+             &state->p_x, &state->p_y, &state->v_x, &state->v_y, &state->acc_x,
+             &state->acc_y) != 7) {
+    return -1;
+  }
   return 0;
 }
 
@@ -145,9 +156,9 @@ void WriteCurrentState(FILE* file, BotState* state) {
   fseek(file, 0, SEEK_END);
 
   // Write the new line to the file
-  fprintf(file, "%.2lf, %lf, %lf, %lf, %lf, %lf, %lf\n", state->time,
-          state->p_x, state->p_y, state->v_x, state->v_y, state->acc_x,
-          state->acc_y);
+  fprintf(file, "%.2lf, %.4lf, %.4lf, %.4lf, %.4lf, %.4lf, %.4lf\n",
+          state->time, state->p_x, state->p_y, state->v_x, state->v_y,
+          state->acc_x, state->acc_y);
   fflush(file);
 }
 
