@@ -48,9 +48,6 @@ void UpdateBotState(BotState* state) {
 }
 
 void HandleTimeSignal(int sig) {
-  // Increase the time by its assigned period
-  timer_time += PERIOD_MS / 1000.0;
-
   // Enable writing after 200ms.
   enable_writing_flg = 1;
 
@@ -102,12 +99,17 @@ void PollSignalEvent(FILE* imu_file) {
         InitBotState(&state);
       } else {
         UpdateBotState(&state);
-        printf("%.2lf, %.4lf, %.4lf, %.4lf, %.4lf, %.4lf, %.4lf\n", state.time,
-               state.p_x, state.p_y, state.v_x, state.v_y, state.acc_x,
-               state.acc_y);
       }
 
+      // Print data every 200ms
+      // printf("%.2lf, %.4lf, %.4lf, %.4lf, %.4lf, %.4lf, %.4lf\n", state.time,
+      //        state.p_x, state.p_y, state.v_x, state.v_y, state.acc_x,
+      //        state.acc_y);
+
       WriteCurrentState(imu_file, &state);
+
+      // Increase the time by its assigned period
+      timer_time += PERIOD_MS / 1000.0;
     }
   }
 }
@@ -175,10 +177,13 @@ FILE* AccessImuData() {
 }
 
 int main() {
+  // Create timer
   PrepareTimer();
 
+  // Open file or create if not existant
   FILE* imu_file = AccessImuData();
 
+  // Update robot's state every 200ms
   PollSignalEvent(imu_file);
 
   fclose(imu_file);
