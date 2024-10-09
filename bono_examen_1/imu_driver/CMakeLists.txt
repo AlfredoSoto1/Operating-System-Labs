@@ -12,4 +12,6 @@ include_directories(include)
 
 # Add the executable 
 add_executable(${CMAKE_PROJECT_NAME}
-src/main.c)
+src/main.c
+src/MyTimer.c
+src/imu_driver.c)
