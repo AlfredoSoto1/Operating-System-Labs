@@ -15,8 +15,6 @@ void InitBotState(BotState* state) {
 void UpdateBotState(BotState* state) {
   double delta_time = timer_time - state->time;
 
-  printf("Last time:%lf %lf %lf\n", state->time, delta_time, timer_time);
-
   // Set the current time
   state->time = timer_time;
 
