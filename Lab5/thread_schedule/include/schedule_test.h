@@ -1,0 +1,4 @@
+#ifndef SCHEDULE_TEST_H
+#define SCHEDULE_TEST_H
+
+#endif  // SCHEDULE_TEST_H
