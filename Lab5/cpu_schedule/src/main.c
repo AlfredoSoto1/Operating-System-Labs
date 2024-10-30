@@ -21,7 +21,7 @@ int main() {
     test.priorities = priorities[i];
 
     // Prepare and set the samples
-    GenerateSamples(NULL, &test);
+    GenerateSamples(csv, &test);
     FreeSamples(&test);
   }
 
