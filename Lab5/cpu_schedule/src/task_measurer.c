@@ -7,23 +7,28 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-void GenerateSamples(ScheduleSampleTest* test) {
+void GenerateSamples(FILE* csv, ScheduleSampleTest* test) {
   // Memoize the averave time taken and each child's time for each sample
   test->avrg_time_taken = malloc(sizeof(double) * test->children);
   test->child_time_taken = malloc(sizeof(long*) * test->children);
 
+  // Fill the allocated tables
   for (int i = 0; i < test->children; i++) {
     test->avrg_time_taken[i] = 0;
     test->child_time_taken[i] = malloc(sizeof(long) * test->samples);
   }
 
+  // Handle the children sample process
   for (int sample = 0; sample < test->samples; sample++) {
     HandleChildrenSample(test, sample);
   }
 
+  // Display the average time it took for all samples within one priority set.
   for (int child = 0; child < test->children; child++) {
     printf("Avrg [%d] pri[%3d]: %lf\n", child, test->priorities[child],
            test->avrg_time_taken[child]);
+
+    // FillCsv(csv, child, test);
   }
   printf("---------------------\n");
 }
@@ -82,7 +87,7 @@ void HandleChildrenSample(ScheduleSampleTest* test, int sample) {
     // Calculate the elapsed time and print it in microseconds
     long elapsed_time = (end[i].tv_sec - start.tv_sec) * 1000000 +
                         (end[i].tv_usec - start.tv_usec);
-    printf("p[%d] pri[%3d] lifetime: %ldus\n", i, test->priorities[i],
+    printf("Process[%d] priority[%3d] elapsed %ldus\n", i, test->priorities[i],
            elapsed_time);
 
     // Save the time taken of the child after finishing the process
@@ -97,4 +102,25 @@ void HandleChildrenSample(ScheduleSampleTest* test, int sample) {
 void CpuBoundTask() {
   // Make CPU run at max
   for (volatile long i = 0; i < 1000000000; i++);
+}
+
+FILE* HandleCsv() {
+  // Create file in append mode
+  FILE* csv = fopen("schedule_results.csv", "a+");
+  if (csv) {
+    // Set csv title
+    fprintf(csv, "ProcessNum, Sample, Priority, Elapsed_Time_Microseconds\n");
+  } else {
+    perror("Failed to open file");
+    exit(1);
+  }
+
+  return csv;
+}
+
+void FillCsv(FILE* csv, int child, ScheduleSampleTest* test) {
+  // for (int i = 0; i < test->samples; i++) {
+  //   fprintf(csv, "%d, %d, %d, %ld\n", child, i + 1, test->priorities[child],
+  //           test->child_time_taken[child][i]);
+  // }
 }

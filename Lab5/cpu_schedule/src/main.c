@@ -1,7 +1,7 @@
 #include "task_measurer.h"
 
 #define NUM_TESTS 6
-#define NUM_SAMPLES 2
+#define NUM_SAMPLES 1
 #define NUM_CHILDREN 3
 
 int main() {
@@ -10,14 +10,23 @@ int main() {
       {0, 0, 20}, {10, 10, -10}, {-20, -20, -20},
   };
 
-  ScheduleSampleTest test;
+  // Open CSV file for recording results
+  FILE* csv = HandleCsv();
 
-  test.samples = NUM_SAMPLES;
-  test.children = NUM_CHILDREN;
-
-  for (int i = 0; i < NUM_TESTS; i++) {
+  for (int i = 0; i < 1; i++) {
+    // Create schedule sample tests
+    ScheduleSampleTest test;
+    test.samples = NUM_SAMPLES;
+    test.children = NUM_CHILDREN;
     test.priorities = priorities[i];
-    GenerateSamples(&test);
+
+    // Prepare and set the samples
+    GenerateSamples(NULL, &test);
     FreeSamples(&test);
   }
+
+  // Close the CSV file
+  fclose(csv);
+
+  return 0;
 }

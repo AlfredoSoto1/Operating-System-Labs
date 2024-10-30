@@ -1,64 +1,46 @@
-#include <pthread.h>
-#include <sched.h>
-#include <stdio.h>
-#include <string.h>
-#include <sys/resource.h>
-#include <unistd.h>
+#include "schedule_test.h"
 
-void* thread_func(void* arg) {
-  int num = *(int*)arg;
-
-  int policy;
-  struct sched_param param;
-  pthread_getschedparam(pthread_self(), &policy, &param);
-
-  const char* policy_str = (policy == SCHED_FIFO)    ? "SCHED_FIFO"
-                           : (policy == SCHED_RR)    ? "SCHED_RR"
-                           : (policy == SCHED_OTHER) ? "SCHED_OTHER"
-                                                     : "UNKNOWN";
-
-  printf("Thread %lu is running with policy %s and priority %d\n",
-         pthread_self(), policy_str, param.sched_priority);
-
-  int i = 0;
-  while (i < 10) {
-    // usleep(500000);
-    for (volatile long j = 0; j < 1000000000; j++);
-    printf("Thread %d running. iteration %d\n", num, i);
-    i++;
-  }
-}
+#define SAMPLES 6
+#define THREAD_NUM 4
 
 int main() {
-  /**
-   * @brief Program needs to run in SUDO to make things work
-   *
-   */
+  // Set priority tests
+  int priority_tests[THREAD_NUM][SAMPLES] = {
+      {50, 0, 99, 90, 20, 80},
+      {50, 0, 99, 10, 20, 80},
+      {50, 99, 0, 90, 80, 20},
+      {50, 99, 0, 10, 80, 20},
+  };
 
-  pthread_t t1, t2;
-  int arg1 = 1, arg2 = 2;
+  // Prepare samples
+  ThreadSampleTest test[THREAD_NUM][SAMPLES];
 
-  struct sched_param param;
-  pthread_attr_t attr;
+  // Initialize CSV file with headers
+  FILE* csv = HandleCsv();
 
-  pthread_attr_init(&attr);
-  pthread_attr_setinheritsched(&attr, PTHREAD_EXPLICIT_SCHED);
+  // Spawn thread samples
+  for (int j = 0; j < SAMPLES; j++) {
+    for (int i = 0; i < THREAD_NUM; i++) {
+      test[i][j].sample = j;
+      test[i][j].elapsed_time = 0;
+      test[i][j].policy = i < THREAD_NUM / 2 ? SCHED_FIFO : SCHED_RR;
+      test[i][j].priority = priority_tests[i][j];
+      test[i][j].thread_num = i + 1;
 
-  pthread_attr_setschedpolicy(&attr, SCHED_FIFO);
-  param.sched_priority = 50;
-  pthread_attr_setschedparam(&attr, &param);
-  pthread_create(&t1, &attr, thread_func, &arg1);
+      SpawnThread(&test[i][j]);
+    }
+  }
 
-  pthread_attr_init(&attr);
-  pthread_attr_setinheritsched(&attr, PTHREAD_EXPLICIT_SCHED);
+  // Query results from samples
+  for (int j = 0; j < SAMPLES; j++) {
+    for (int i = 0; i < THREAD_NUM; i++) {
+      JoinSamples(&test[i][j]);
+      FillCsv(csv, &test[i][j]);
+    }
+  }
 
-  pthread_attr_setschedpolicy(&attr, SCHED_RR);
-  param.sched_priority = 50;
-  pthread_attr_setschedparam(&attr, &param);
-  pthread_create(&t2, &attr, thread_func, &arg2);
-
-  pthread_join(t1, NULL);
-  pthread_join(t2, NULL);
+  // Close file after filling csv
+  fclose(csv);
 
   return 0;
 }
