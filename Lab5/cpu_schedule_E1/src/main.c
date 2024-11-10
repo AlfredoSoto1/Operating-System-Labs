@@ -6,8 +6,7 @@
 
 int main() {
   int priorities[NUM_TESTS][NUM_CHILDREN] = {
-      {0, 0, 0},  {-10, 0, 10},  {-20, 0, 10},
-      {0, 0, 20}, {10, 10, -10}, {-20, -20, -20},
+      {-10, 0, 10}
   };
 
   for (int i = 0; i < NUM_TESTS; i++) {

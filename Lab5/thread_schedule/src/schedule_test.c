@@ -8,7 +8,7 @@
 void CpuBoundTask() {
   // Make CPU run at max
   int i = 0;
-  while (i < 20) {
+  while (i < 200) {
     for (volatile long j = 0; j < 1000000000; j++);
     i++;
   }
