@@ -10,28 +10,6 @@ void printb(int number) {
   printf("\n");
 }
 
-typedef struct {
-  int x_pos;
-  int y_pos;
-  char* device;
-} DriverMouse;
-
-int DriverInit(DriverMouse* driver) {
-  // Generic mouse device file
-  driver->device = "/dev/input/mice";
-
-  // Open the mice file content
-  int fd = open(driver->device, O_RDONLY);
-  if (fd == -1) {
-    perror("Error opening device");
-    return -1;
-  }
-
-  return fd;
-}
-
-void GetMouse() {}
-
 void capture() {
   const char* device = "/dev/input/mice";  // Generic mouse device file
   int fd = open(device, O_RDONLY);
