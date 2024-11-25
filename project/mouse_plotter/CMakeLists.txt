@@ -5,7 +5,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -DDEBUG")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG -s")
 
 # Set the project name 
-project(project) 
+project(mouse_plotter) 
 
 # Include the current directory for header files 
 include_directories(include) 
