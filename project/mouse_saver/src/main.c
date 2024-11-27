@@ -1,12 +1,17 @@
 #include "MouseDriver.h"
+
 int main() {
-  // Create a new mouse driver attached to the IO device from linux
+  // initiate screen and drivers
+  InitScreenBuffer();
   InitMouseDriver();
 
+  // Listen for IO
   while (1) {
-    GetMouse();
+    GetMouse(GetScreen());
   }
 
+  // Free allocated data
   DisposeMouseDriver();
+  DisposeScreenBuffer();
   return 0;
 }

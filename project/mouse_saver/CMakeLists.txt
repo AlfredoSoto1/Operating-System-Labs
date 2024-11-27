@@ -12,7 +12,9 @@ include_directories(include)
 
 # Add the executable 
 add_executable(${CMAKE_PROJECT_NAME}
+src/Screen.c
 src/MouseDriver.c
+src/MouseRecorder.c
 src/main.c)
 
 # Link math library

@@ -1,6 +1,8 @@
 #ifndef MOUSE_DRIVER_H
 #define MOUSE_DRIVER_H
 
+#include "Screen.h"
+
 /**
  * @brief
  *
@@ -8,6 +10,8 @@
 typedef struct {
   int x_pos;
   int y_pos;
+  int max_x, max_y;
+  int least_x, least_y;
   int f_device;
   char* device;
 } MouseDriver;
@@ -32,9 +36,16 @@ void DisposeMouseDriver(void);
 void HandleMouseCleanup(int signal);
 
 /**
+ * @brief Get the Mouse Driver object
+ *
+ * @return MouseDriver*
+ */
+MouseDriver* GetMouseDriver(void);
+
+/**
  * @brief Get the Mouse object
  *
  */
-void GetMouse(void);
+void GetMouse(Screen* screen);
 
 #endif  // MOUSE_DRIVER_H
