@@ -30,7 +30,7 @@ Position trail[TRAIL_LENGTH];
 
 void InitPlotter(void) {
   // Open a binary file for reading and writing
-  f_recorded_positions = fopen("positions.dat", "rb");
+  f_recorded_positions = fopen("mouse_data.dat", "rb");
   if (f_recorded_positions == NULL) {
     perror("Failed to open file");
     exit(EXIT_FAILURE);

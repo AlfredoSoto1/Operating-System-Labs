@@ -14,7 +14,7 @@ static FILE* f_recorded_positions;
 void InitMouseRecorder(void) {
   // Create file with permissions if it doesnt exist
   mode_t old_umask = umask(0);
-  int fd = open("positions.dat", O_CREAT | O_RDWR, 0666);
+  int fd = open("mouse_data.dat", O_CREAT | O_RDWR, 0666);
   if (fd == -1) {
     perror("Failed to create or open positions.dat");
     exit(EXIT_FAILURE);
@@ -23,7 +23,7 @@ void InitMouseRecorder(void) {
   umask(old_umask);
 
   // Open a binary file for reading and writing
-  f_recorded_positions = fopen("positions.dat", "w+b");
+  f_recorded_positions = fopen("mouse_data.dat", "w+b");
   if (f_recorded_positions == NULL) {
     perror("Failed to open file");
     exit(EXIT_FAILURE);
@@ -38,7 +38,7 @@ void DisposeMouseRecorder(void) {
 }
 
 void AdjustPositionsBeforeExit(void) {
-  FILE* f_temp = fopen("positions.dat", "r+b");
+  FILE* f_temp = fopen("mouse_data.dat", "r+b");
   if (f_temp == NULL) {
     perror("Failed to open positions file for reading");
     return;
