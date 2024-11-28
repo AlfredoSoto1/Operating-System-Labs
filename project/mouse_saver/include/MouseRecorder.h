@@ -41,6 +41,15 @@ void RecordPoisitions(MouseDriver* driver);
 ull Pack(int x, int y);
 
 /**
+ * @brief Packs the float into one 64 bit long
+ *
+ * @param x
+ * @param y
+ * @return ull
+ */
+ull PackF(float x, float y);
+
+/**
  * @brief Unpacks 64 bit number into 2 32 bit integerss
  *
  * @param packed

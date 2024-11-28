@@ -65,7 +65,7 @@ MouseDriver* GetMouseDriver(void) {
   return &driver;
 }
 
-void GetMouse(Screen* screen) {
+void GetMouse(void) {
   // 3 bytes of data reserved for storing mouse delta position and mouse button
   // actions.
   signed char data[3];
@@ -98,9 +98,8 @@ void GetMouse(Screen* screen) {
     driver.x_pos = abs_x_pos;
     driver.y_pos = abs_y_pos;
 
-    printf("W:%d, H:%d, dx: %d, dy: %d x:%d, y:%d\n", screen->width,
-           screen->height, driver.least_x, driver.max_x, driver.x_pos,
-           driver.y_pos);
+    printf("dx: %d, dy: %d x:%d, y:%d\n", driver.least_x, driver.max_x,
+           driver.x_pos, driver.y_pos);
 
     RecordPoisitions(&driver);
   }

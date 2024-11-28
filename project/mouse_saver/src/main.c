@@ -2,16 +2,14 @@
 
 int main() {
   // initiate screen and drivers
-  InitScreenBuffer();
   InitMouseDriver();
 
   // Listen for IO
   while (1) {
-    GetMouse(GetScreen());
+    GetMouse();
   }
 
   // Free allocated data
   DisposeMouseDriver();
-  DisposeScreenBuffer();
   return 0;
 }

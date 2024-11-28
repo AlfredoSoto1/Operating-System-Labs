@@ -1,8 +1,6 @@
 #ifndef MOUSE_DRIVER_H
 #define MOUSE_DRIVER_H
 
-#include "Screen.h"
-
 /**
  * @brief
  *
@@ -46,6 +44,6 @@ MouseDriver* GetMouseDriver(void);
  * @brief Get the Mouse object
  *
  */
-void GetMouse(Screen* screen);
+void GetMouse();
 
 #endif  // MOUSE_DRIVER_H

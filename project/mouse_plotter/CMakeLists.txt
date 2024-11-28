@@ -12,7 +12,12 @@ include_directories(include)
 
 # Add the executable 
 add_executable(${CMAKE_PROJECT_NAME}
+src/MousePlotter.c
 src/main.c)
+
+
+target_link_libraries(${CMAKE_PROJECT_NAME}
+    ncurses)
 
 # Link math library
 # target_link_libraries(${CMAKE_PROJECT_NAME} m)

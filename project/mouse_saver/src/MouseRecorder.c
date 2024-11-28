@@ -12,6 +12,16 @@
 static FILE* f_recorded_positions;
 
 void InitMouseRecorder(void) {
+  // Create file with permissions if it doesnt exist
+  mode_t old_umask = umask(0);
+  int fd = open("positions.dat", O_CREAT | O_RDWR, 0666);
+  if (fd == -1) {
+    perror("Failed to create or open positions.dat");
+    exit(EXIT_FAILURE);
+  }
+  close(fd);
+  umask(old_umask);
+
   // Open a binary file for reading and writing
   f_recorded_positions = fopen("positions.dat", "w+b");
   if (f_recorded_positions == NULL) {
@@ -52,8 +62,10 @@ void AdjustPositionsBeforeExit(void) {
       y += -driver->least_y;
     }
 
+    float w = abs(driver->least_x - driver->max_x);
+    float h = abs(driver->least_y - driver->max_y);
     // Re-pack the modified position
-    packed_position = Pack(x, y);
+    packed_position = PackF(x / w, y / h);
 
     // Move the file pointer back to the previous position to overwrite
     fseek(f_temp, -sizeof(ull), SEEK_CUR);
@@ -76,6 +88,17 @@ ull Pack(int x, int y) {
 
   packed |= ((ull)x & 0xFFFFFFFF);
   packed |= ((ull)y & 0xFFFFFFFF) << 32;
+
+  return packed;
+}
+
+ull PackF(float x, float y) {
+  int x_t = *(int*)&x;
+  int y_t = *(int*)&y;
+  ull packed = 0;
+
+  packed |= ((ull)x_t & 0xFFFFFFFF);
+  packed |= ((ull)y_t & 0xFFFFFFFF) << 32;
 
   return packed;
 }
